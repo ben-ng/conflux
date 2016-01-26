@@ -6,16 +6,23 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Contents**
 
-- [Quick Example](#quick-example)
+- [Motivation](#motivation)
+- [Example](#example)
 - [API](#api)
   - [Creating an instance](#creating-an-instance)
+  - [Performing Methods](#performing-methods)
   - [Dispatching Actions](#dispatching-actions)
+  - [Subscribing to changes](#subscribing-to-changes)
   - [Deconstructing an instance](#deconstructing-an-instance)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Quick Example
+## Motivation
+
+Conflux helps you build understandable distributed applications. Its trying to do what [Redux](http://redux.js.org) did to [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did to [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)).
+
+## Example
 
 ```js
 var redux = require('gaggle')
@@ -27,17 +34,20 @@ var opts = {
       , redisChannel: 'foo'
       }
     , clusterSize: 3
+
+      // These are the "action creators" in Redux
     , methods: {
-        foobar: function (foo, bar, cb) {
+        append: function (data, cb) {
           this.dispatch({
             type: 'append'
-          , foo: foo
-          , bar: bar
+          , dat: data
           }, cb)
         }
       }
+
+      // Exactly the same as the reducer function in Redux
     , reduce: function (state, action) {
-        // Either set up initial state, or deep clone old state
+        // Substitute for your favorite immutable data library
         if (state == null)
           state = {log: []}
         else
@@ -64,20 +74,11 @@ nodeB.subscribe(function () {
   console.log(nodeB.getState().log.join(' '))
 })
 
-nodeA.dispatch({
-  type: 'append'
-, data: 'foo'
-})
+nodeA.perform('append', ['foo'])
 
-nodeB.dispatch({
-  type: 'append'
-, data: 'bar'
-})
+nodeB.dispatch('append', ['bar'])
 
-nodeC.dispatch({
-  type: 'append'
-, data: 'baz'
-})
+nodeC.perform('append', ['baz'])
 
 // Output will be something like:
 //
@@ -111,32 +112,15 @@ var conflux = require('conflux')
       }
 
       // these take the place of "action creators" in redux parlance
-    , actions: {
-        // actions should return either an error or an action
-        foobar: function (arg_a, arg_b) {
-          // "this" in here refers to the leader conflux instance
-
-          // distributed systems are tricky. make sure that the action
-          // can be applied to the current state before dispatching it.
-          // isValidForFoobar is left to you to implement
-          if (isValidForFoobar(this.getState())) {
-            return {
-              type: 'FOOBAR'
-            , a: arg_a
-            , b: arg_b
-            }
-          }
-          else {
-            return new Error('Foobar is invalid for the current state')
-          }
+    , methods: {
+        foobar: function (foo, bar, cb) {
+          this.dispatch(action, cb)
         }
       }
 
       // this is the reducer function that redux stores are constructed with
     , reduce: function (state, action) {
-        if (action.type === 'FOOBAR') {
-          // return a new `state` using the information in `action`
-        }
+        // return a new `state` using the information in `action`
       }
 
       // ... additional Gaggle options, see Gaggle's documentation
@@ -145,13 +129,21 @@ var conflux = require('conflux')
 
 Conflux is built on top of [Gaggle](https://github.com/ben-ng/gaggle), and therefore supports [any communication channel that Gaggle supports](https://github.com/ben-ng/gaggle#channels).
 
+### Performing Methods
+
+```txt
+c.perform(String methodName, Array args, [Number timeout], [function(Error) callback])
+```
+
+You never dispatch Actions directly in Conflux. Actions must be dispatched from the body of a Method. You declare Methods when constructing a Conflux instance, and call them with `perform()`.
+
 ### Dispatching Actions
 
 ```txt
 c.dispatch(Mixed action)
 ```
 
-Anything that can be serialized and deserialized as JSON is a valid `action`, but you probably want to use an object.
+Anything that can be serialized and deserialized as JSON is a valid Action, but you probably want to use an object. You should only ever call `dispatch` from a Method.
 
 ```js
 g.dispatch({
