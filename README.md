@@ -14,13 +14,16 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
   - [Dispatching Actions](#dispatching-actions)
   - [Subscribing to changes](#subscribing-to-changes)
   - [Deconstructing an instance](#deconstructing-an-instance)
+- [Correctness](#correctness)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Motivation
 
-Conflux helps you build understandable distributed applications. Its trying to do what [Redux](http://redux.js.org) did for [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did for [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)).
+Conflux helps you build understandable distributed applications.
+
+It is an attempt at doing what [Redux](http://redux.js.org) did for [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did for [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)). It does this by combining the two ideas.
 
 ## Example
 
@@ -138,6 +141,10 @@ g.close(function (err) {})
 
 g.close().then()
 ```
+
+## Correctness
+
+Distributed systems are really difficult to test, and Conflux is no exception. Conflux has unit tests with full statement and branch coverage. It is built on Gaggle, which has full statement coverage. Formal proofs and fuzzing are on the way.
 
 ## License
 
