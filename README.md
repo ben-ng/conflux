@@ -140,16 +140,18 @@ You never dispatch Actions directly in Conflux. Actions must be dispatched from 
 ### Dispatching Actions
 
 ```txt
-c.dispatch(Mixed action)
+c.dispatch(Mixed action, Number timeout, function(Error) callback)
 ```
 
-Anything that can be serialized and deserialized as JSON is a valid Action, but you probably want to use an object. You should only ever call `dispatch` from a Method.
+Anything that can be serialized and deserialized as JSON is a valid Action, but you probably want to use an object. You should only ever call `dispatch` from a Method, and you should provide both a timeout and a callback function.
 
 ```js
 g.dispatch({
   type: 'MY_ACTION_NAME'
 , foo: 'bar'
 , dee: 'dum'
+}, function (err) {
+
 })
 ```
 
