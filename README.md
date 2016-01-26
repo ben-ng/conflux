@@ -20,74 +20,36 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
 
 ## Motivation
 
-Conflux helps you build understandable distributed applications. Its trying to do what [Redux](http://redux.js.org) did to [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did to [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)).
+Conflux helps you build understandable distributed applications. Its trying to do what [Redux](http://redux.js.org) did for [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did for [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)).
 
 ## Example
 
 ```js
-var redux = require('gaggle')
-var uuid = require('uuid')
-var defaults = require('lodash/defaults')
-var opts = {
-      channel: {
-        name: 'redis'
-      , redisChannel: 'foo'
-      }
-    , clusterSize: 3
+// Your action creators, reducer, and other settings go in `opts`
+// See the full docs for that; I want to keep this example short.
+var nodeA = conflux(opts)
+var nodeB = conflux(opts)
+var nodeC = conflux(opts)
 
-      // These are the "action creators" in Redux
-    , methods: {
-        append: function (data, cb) {
-          this.dispatch({
-            type: 'append'
-          , dat: data
-          }, cb)
-        }
-      }
-
-      // Exactly the same as the reducer function in Redux
-    , reduce: function (state, action) {
-        // Substitute for your favorite immutable data library
-        if (state == null)
-          state = {log: []}
-        else
-          state = JSON.parse(JSON.stringify(state))
-
-
-        switch (action.type) {
-          case 'append':
-            state.log.push(action.data)
-            return state
-
-          // More actions go here
-          default:
-            return state
-        }
-      }
-    }
-
-var nodeA = conflux(defaults({id: uuid.v4()}, opts))
-var nodeB = conflux(defaults({id: uuid.v4()}, opts))
-var nodeC = conflux(defaults({id: uuid.v4()}, opts))
-
+// When the cluster comes to consensus about an action, this
+// method is called.
 nodeB.subscribe(function () {
   console.log(nodeB.getState().log.join(' '))
 })
 
+// Performs an RPC call on the leader node, causing actions
+// to be dispatched on the entire cluster.
 nodeA.perform('append', ['foo'])
 
 nodeB.dispatch('append', ['bar'])
 
 nodeC.perform('append', ['baz'])
 
-// Output will be something like:
+// Output will be some permutation of:
 //
 // bar
 // bar foo
 // bar foo baz
-//
-// NOTE: While all nodes will have the same final
-// state, actions may be applied in ANY order!
 ```
 
 ## API
@@ -108,7 +70,7 @@ var conflux = require('conflux')
     , channel: {
         name: 'foobar'
         // ... additional Channel options specific to "foobar"
-        // see note about channels below
+        // You can use any Gaggle Channel, like Redis.
       }
 
       // these take the place of "action creators" in redux parlance
