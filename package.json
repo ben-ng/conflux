@@ -35,10 +35,11 @@
     "tap": "^5.1.1"
   },
   "dependencies": {
+    "async": "^1.5.2",
     "bluebird": "^3.1.1",
+    "gaggle": "ben-ng/gaggle",
     "in-publish": "^2.0.0",
     "lodash": "^4.0.0",
-    "uuid": "^2.0.1",
-    "gaggle": "ben-ng/gaggle"
+    "uuid": "^2.0.1"
   }
 }
