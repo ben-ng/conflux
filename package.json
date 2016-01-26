@@ -1,0 +1,44 @@
+{
+  "name": "conflux",
+  "version": "1.0.0",
+  "description": "Distributed predictable state container",
+  "main": "lib/factory",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tap test/**/*.js --reporter=spec --statements=100 --coverage-report=text-summary",
+    "coverage": "tap test/**/*.js --reporter=spec --coverage --coverage-report=html && open -a \"Safari\" coverage/index.html",
+    "test-ci": "tap test/**/*.js --reporter=spec --statements=100",
+    "tdd": "nodemon -x npm test",
+    "doctoc": "doctoc README.md",
+    "prepublish": "in-publish && npm run doctoc || not-in-publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ben-ng/conflux.git"
+  },
+  "keywords": [
+    "raft",
+    "paxos"
+  ],
+  "author": "Ben Ng <me@benng.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ben-ng/conflux/issues"
+  },
+  "homepage": "https://github.com/ben-ng/conflux#readme",
+  "devDependencies": {
+    "doctoc": "^0.15.0",
+    "joi": "^6.10.0",
+    "nodemon": "^1.4.1",
+    "tap": "^5.1.1"
+  },
+  "dependencies": {
+    "bluebird": "^3.1.1",
+    "in-publish": "^2.0.0",
+    "lodash": "^4.0.0",
+    "uuid": "^2.0.1",
+    "gaggle": "ben-ng/gaggle"
+  }
+}
