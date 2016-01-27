@@ -7,7 +7,8 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
 **Contents**
 
 - [Motivation](#motivation)
-- [Example](#example)
+- [What Can I Build With Conflux?](#what-can-i-build-with-conflux)
+- [Quick Example](#quick-example)
 - [API](#api)
   - [Creating an instance](#creating-an-instance)
   - [Performing Methods](#performing-methods)
@@ -22,15 +23,21 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
 
 ## Motivation
 
-Conflux helps you build understandable distributed applications.
+Distributed systems are **hard**. Conflux is an attempt at making distributed systems understandable. It aims to do what [Redux](http://redux.js.org) did for [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did for [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)).
 
-It is an attempt at doing what [Redux](http://redux.js.org) did for [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did for [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)). It does this by combining the two ideas.
+Natrually, it does this by composing the two ideas.
 
-## Example
+## What Can I Build With Conflux?
+
+Conflux is *very* new, so I am working on a few example applications.
+
+* [Distributed Mutex](https://github.com/ben-ng/mutex-js)
+
+## Quick Example
 
 ```js
-// Your action creators, reducer, and other settings go in `opts`
-// See the full docs for that; I want to keep this example short.
+// Your methods, reducer, and other settings go in `opts`
+// See the full docs for that; this example is meant to be short
 var nodeA = conflux(opts)
 var nodeB = conflux(opts)
 var nodeC = conflux(opts)
@@ -45,7 +52,7 @@ nodeB.subscribe(function () {
 // to be dispatched on the entire cluster.
 nodeA.perform('append', ['foo'])
 
-nodeB.dispatch('append', ['bar'])
+nodeB.perform('append', ['bar'])
 
 nodeC.perform('append', ['baz'])
 
@@ -55,6 +62,8 @@ nodeC.perform('append', ['baz'])
 // bar foo
 // bar foo baz
 ```
+
+If you're familiar with Redux this should seem quite familiar. You `subscribe()` to a Conflux instance, and call `getState()` inside to get the current state. Instead of dispatching actions directly, you `perform()` Methods that `dispatch()` them. Methods are declared when you construct a Conflux instance, and are the equivalent of Action Creators in Redux.
 
 ## API
 
@@ -109,14 +118,14 @@ You never dispatch Actions directly in Conflux. Actions must be dispatched from 
 c.dispatch(Mixed action, Number timeout, function(Error) callback)
 ```
 
-Anything that can be serialized and deserialized as JSON is a valid Action, but you probably want to use an object. You should only ever call `dispatch` from a Method, and you should provide both a timeout and a callback function.
+Anything that can be serialized and deserialized as JSON is a valid Action, but you probably want to use an object. You should only ever call `dispatch` from a Method, and you should provide both a timeout and a callback function. The callback function is called when the leader has committed the action. If you do not need to wait for the entry to be committed, just provide a no-op callback.
 
 ```js
 g.dispatch({
   type: 'MY_ACTION_NAME'
 , foo: 'bar'
 , dee: 'dum'
-}, function (err) {
+}, 1000, function (err) {
 
 })
 ```
@@ -158,7 +167,11 @@ c.close().then()
 
 ## Correctness
 
-Distributed systems are really difficult to test, and Conflux is no exception. Conflux has unit tests with full statement and branch coverage. It is built on Gaggle, which has full statement coverage. Formal proofs and fuzzing are on the way.
+Distributed systems are really difficult to prove and test, and Conflux is no exception. I am still working on formal proofs of correctness, but in the meantime here is an incomplete list of things that are being done to
+
+* Conflux has integration tests with [full statement *and* branch coverage](https://coveralls.io/github/ben-ng/conflux?branch=master)
+* It is built on Gaggle, which has integration tests with [full statement coverage](https://coveralls.io/github/ben-ng/gaggle?branch=master)
+* My [distributed mutex](https://github.com/ben-ng/mutex-js) is built on Conflux and has [full statement coverage](https://coveralls.io/github/ben-ng/mutex-js?branch=master) and a [fuzz test](https://github.com/ben-ng/mutex-js/tree/master/fuzz) you can run yourself
 
 ## License
 
