@@ -13,6 +13,7 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
   - [Performing Methods](#performing-methods)
   - [Dispatching Actions](#dispatching-actions)
   - [Subscribing to changes](#subscribing-to-changes)
+  - [Getting State](#getting-state)
   - [Deconstructing an instance](#deconstructing-an-instance)
 - [Correctness](#correctness)
 - [License](#license)
@@ -128,18 +129,31 @@ c.subscribe(function() callback)
 
 Calls `callback` whenever an action is committed. Returns the `unsubscribe` function for `callback.
 
+### Getting State
+
+```txt
+c.getState()
+c.getProvisionalState()
+```
+
+`getState` gets you the *committed* state of the node. All nodes are guaranteed to enter this state at some point, but it does not contain the effects uncommitted actions.
+
+`getProvisionalState` gets you the state of the nodes *if all uncommitted actions are committed*. Since the leader might fail before these actions are committed, *it is possible that no nodes ever actually enter this state*.
+
+You will likely use the provisional state in your Methods, and the committed state outside of Conflux.
+
 ### Deconstructing an instance
 
 ```txt
-g.close([function(Error) callback])
+c.close([function(Error) callback])
 ```
 
 When you're done, call `close` to remove event listeners and disconnect the channel.
 
 ```js
-g.close(function (err) {})
+c.close(function (err) {})
 
-g.close().then()
+c.close().then()
 ```
 
 ## Correctness

@@ -21,7 +21,7 @@ tap.test('nudges the cluster when needed', function (t) {
   , a = conflux(_.assign({id: uuid.v4()}, opts))
   , b = conflux(_.assign({id: uuid.v4()}, opts))
 
-  t.plan(6)
+  t.plan(7)
 
   async.whilst(function () {
     return !a._gaggle.isLeader() && !b._gaggle.isLeader()
@@ -76,6 +76,8 @@ tap.test('nudges the cluster when needed', function (t) {
           leader.perform('foobar', [])
           .then(function () {
             t.pass('performed the action once nudged')
+
+            t.deepEquals(leader.getProvisionalState(), ['foo', 'foo'], 'should get the correct provisional state')
 
             return Promise.all([leader.close(), follower.close()])
           })
