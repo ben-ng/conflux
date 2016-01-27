@@ -1,6 +1,6 @@
 {
   "name": "conflux",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Distributed predictable state container",
   "main": "lib/factory",
   "directories": {
