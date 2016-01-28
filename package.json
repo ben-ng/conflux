@@ -29,13 +29,13 @@
   },
   "homepage": "https://github.com/ben-ng/conflux#readme",
   "devDependencies": {
+    "async": "^1.5.2",
     "doctoc": "^0.15.0",
     "joi": "^6.10.0",
     "nodemon": "^1.4.1",
     "tap": "^5.1.1"
   },
   "dependencies": {
-    "async": "^1.5.2",
     "bluebird": "^3.1.1",
     "gaggle": "^2.0.3",
     "in-publish": "^2.0.0",
