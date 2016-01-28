@@ -177,15 +177,17 @@ function (state, action) {
   }
 
   // Handle known actions
-  if (typeof action === 'object') {
-    switch (action.type) {
-      case 'FOO':
-        state.isFoo = true
-      break
-      case 'BAR':
-        state.isBar = true
-      break
-    }
+  if (action == null) {
+    return state
+  }
+
+  switch (action.type) {
+    case 'FOO':
+      state.isFoo = true
+    break
+    case 'BAR':
+      state.isBar = true
+    break
   }
 
   // Return the new state
