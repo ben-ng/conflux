@@ -11,10 +11,10 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
 - [Quick Example](#quick-example)
 - [API](#api)
   - [Creating an instance](#creating-an-instance)
-  - [Performing Methods](#performing-methods)
-  - [Dispatching Actions](#dispatching-actions)
+  - [Performing Methods To Dispatch Actions](#performing-methods-to-dispatch-actions)
+  - [Reducing Actions Into State](#reducing-actions-into-state)
   - [Subscribing to changes](#subscribing-to-changes)
-  - [Getting State](#getting-state)
+  - [Getting Committed and Provisional State](#getting-committed-and-provisional-state)
   - [Deconstructing an instance](#deconstructing-an-instance)
 - [Correctness](#correctness)
 - [License](#license)
@@ -108,7 +108,7 @@ var conflux = require('conflux')
 
 Conflux is built on top of [Gaggle](https://github.com/ben-ng/gaggle), and therefore supports [any communication channel that Gaggle supports](https://github.com/ben-ng/gaggle#channels).
 
-### Performing Methods (Dispatching Actions)
+### Performing Methods To Dispatch Actions
 
 ```txt
 c.perform(String methodName, Array args, [Number timeout], [Function callback])
@@ -163,7 +163,7 @@ c.perform('bonk', [], 5000)
 })
 ```
 
-### State Reducer
+### Reducing Actions Into State
 
 ```js
 // A starter template for your own reducer
@@ -210,18 +210,20 @@ c.subscribe(function() callback)
 
 Calls `callback` whenever an action is committed. Returns the `unsubscribe` function for `callback.
 
-### Getting State
+### Getting Committed and Provisional State
 
 ```txt
 c.getState()
 c.getProvisionalState()
 ```
 
-`getState` gets you the *committed* state of the node. All nodes are guaranteed to enter this state at some point, but it does not contain the effects uncommitted actions.
+Unlike `Redux`, `Conflux` has two types of state: *committed* state, and *provisional* state.
 
-`getProvisionalState` gets you the state of the nodes *if all uncommitted actions are committed*. Since the leader might fail before these actions are committed, *it is possible that no nodes ever actually enter this state*.
+`getState()` gets you the *committed* state of the node. All nodes are guaranteed to enter this state at some point, but it does not contain the effects of uncommitted Actions.
 
-You should use the provisional state in your Methods to determine the validity of an action. The committed state should be used just about everywhere else, like in your `subscribe()` callback.
+`getProvisionalState()` gets you the state of the node *if all currently uncommitted actions are committed*. Since the leader might fail before these Actions are committed, *it is possible that no nodes ever actually enter this state*.
+
+You should use the provisional state in your Methods to determine the validity of an Action. The committed state should be used just about everywhere else, like in your `subscribe()` callback.
 
 ### Deconstructing an instance
 
