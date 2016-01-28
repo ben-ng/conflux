@@ -176,11 +176,12 @@ function (state, action) {
     state = JSON.parse(JSON.stringify(state))
   }
 
-  // Handle known actions
+  // Ignore unknown actions
   if (action == null) {
     return state
   }
 
+  // Handle known actions
   switch (action.type) {
     case 'FOO':
       state.isFoo = true
