@@ -11,11 +11,23 @@ tap.test('nudges the cluster when needed', function (t) {
     , channel: {name: 'memory'}
     , methods: {
         foobar: function (done) {
-          this.dispatch('foo', done)
+          return 'foo'
         }
       }
     , reduce: function (state, action) {
-        return JSON.parse(JSON.stringify(state == null ? [] : state)).concat(action)
+        if (state == null) {
+          state = []
+        }
+        else {
+          state = JSON.parse(JSON.stringify(state))
+        }
+
+        if (action == null) {
+          return state
+        }
+        else {
+          return state.concat(action)
+        }
       }
     }
   , a = conflux(_.assign({id: uuid.v4()}, opts))

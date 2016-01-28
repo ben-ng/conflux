@@ -88,8 +88,12 @@ var conflux = require('conflux')
 
       // these take the place of "action creators" in redux parlance
     , methods: {
-        foobar: function (foo, bar, cb) {
-          this.dispatch(action, cb)
+        foobar: function (foo, bar) {
+          return {
+            type: 'FOOBAR'
+          , foo: foo
+          , bar: bar
+          }
         }
       }
 
@@ -104,31 +108,13 @@ var conflux = require('conflux')
 
 Conflux is built on top of [Gaggle](https://github.com/ben-ng/gaggle), and therefore supports [any communication channel that Gaggle supports](https://github.com/ben-ng/gaggle#channels).
 
-### Performing Methods
-
-```txt
-c.perform(String methodName, Array args, [Number timeout], [function(Error) callback])
-```
-
-You never dispatch Actions directly in Conflux. Actions must be dispatched from the body of a Method. You declare Methods when constructing a Conflux instance, and call them with `perform()`.
-
 ### Dispatching Actions
 
 ```txt
-c.dispatch(Mixed action, Number timeout, function(Error) callback)
+c.perform(String methodName, Array args)
 ```
 
-Anything that can be serialized and deserialized as JSON is a valid Action, but you probably want to use an object. You should only ever call `dispatch` from a Method, and you should provide both a timeout and a callback function. The callback function is called when the leader has committed the action. If you do not need to wait for the entry to be committed, just provide a no-op callback.
-
-```js
-g.dispatch({
-  type: 'MY_ACTION_NAME'
-, foo: 'bar'
-, dee: 'dum'
-}, 1000, function (err) {
-
-})
-```
+You never dispatch Actions directly in Conflux. Actions must be dispatched from the body of a Method. You declare Methods when constructing a Conflux instance, and call them with `perform()`. These Methods return the Action to be dispatched, or an Error if the Action is invalid for the provisional state.
 
 ### Subscribing to changes
 
@@ -149,7 +135,7 @@ c.getProvisionalState()
 
 `getProvisionalState` gets you the state of the nodes *if all uncommitted actions are committed*. Since the leader might fail before these actions are committed, *it is possible that no nodes ever actually enter this state*.
 
-You will likely use the provisional state in your Methods, and the committed state outside of Conflux.
+You should use the provisional state in your Methods to determine the validity of an action. The committed state should be used just about everywhere else, like in your `subscribe()` callback.
 
 ### Deconstructing an instance
 

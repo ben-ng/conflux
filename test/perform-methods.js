@@ -36,21 +36,20 @@ tap.test('can perform methods', function (t) {
       clusterSize: 2
     , channel: {name: 'memory'}
     , methods: {
-        foo: function (done) {
-          this.dispatch({
+        foo: function () {
+          return {
             type: 'foo'
-          }, done)
+          }
         }
-      , bar: function (a, b, done) {
-          var self = this
-
-          setTimeout(function () {
-            self.dispatch({
-              type: 'bar'
-            , a: a
-            , b: b
-            }, done)
-          }, 10)
+      , bar: function (a, b) {
+          return {
+            type: 'bar'
+          , a: a
+          , b: b
+          }
+        }
+      , bork: function () {
+          return new Error('nope')
         }
       }
     , reduce: function (state, action) {
@@ -61,7 +60,12 @@ tap.test('can perform methods', function (t) {
           state = JSON.parse(JSON.stringify(state))
         }
 
-        return state.concat(action)
+        if (action == null) {
+          return state
+        }
+        else {
+          return state.concat(action)
+        }
       }
     }
   , a = conflux(_.assign({id: uuid.v4()}, opts))
@@ -69,7 +73,7 @@ tap.test('can perform methods', function (t) {
   , unsubscribe
   , lastStateOfA
 
-  t.plan(4)
+  t.plan(5)
 
   unsubscribe = a.subscribe(function () {
     lastStateOfA = a.getState()
@@ -80,6 +84,12 @@ tap.test('can perform methods', function (t) {
     t.pass('should perform foo')
 
     return b.perform('bar', ['fee', 'fi'], 5000)
+  })
+  a.perform('bork', [], 5000)
+  .catch(function (err) {
+    t.equals(err.message, 'nope', 'should fail with error from method')
+
+    return Promise.resolve()
   })
   .then(function () {
     t.pass('should perform bar')
