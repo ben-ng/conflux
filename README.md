@@ -108,13 +108,97 @@ var conflux = require('conflux')
 
 Conflux is built on top of [Gaggle](https://github.com/ben-ng/gaggle), and therefore supports [any communication channel that Gaggle supports](https://github.com/ben-ng/gaggle#channels).
 
-### Dispatching Actions
+### Performing Methods (Dispatching Actions)
 
 ```txt
-c.perform(String methodName, Array args)
+c.perform(String methodName, Array args, [Number timeout], [Function callback])
 ```
 
-You never dispatch Actions directly in Conflux. Actions must be dispatched from the body of a Method. You declare Methods when constructing a Conflux instance, and call them with `perform()`. These Methods return the Action to be dispatched, or an Error if the Action is invalid for the provisional state.
+You never dispatch Actions directly in Conflux. Actions must be dispatched from the body of a Method. You declare Methods when constructing a Conflux instance, and call them with `perform()`. These Methods return the Action to be dispatched, `null` if nothing should be done, and an Error if the Action is invalid for the provisional state.
+
+```js
+var opts = {
+  methods: {
+    foobar: function (foo, bar) {
+      // The perform callback will be called with no error and this return
+      // value as the second argument
+      return {
+        type: 'FOOBAR'
+      , foo: foo
+      , bar: bar
+      }
+    }
+  , bonk: function () {
+      return new Error('Whoops')
+    }
+  , noop: function () {
+      // The perform callback will be called with no error or response
+      return null
+    }
+  }
+
+  // ... other Conflux options
+}
+
+var c = conflux(opts)
+
+// Callback API
+c.perform('noop', [], function (err) {
+  console.log(err) // => null
+})
+
+c.perform('noop', [], 5000, function (err) {
+  console.log(err) // => null
+})
+
+// Promise API
+c.perform('foobar', ['a', 'b'])
+.then(function (action) {
+  console.log(action) // => {type: 'FOOBAR', foo: 'a', bar: 'b'}
+})
+
+c.perform('bonk', [], 5000)
+.catch(function (err) {
+  console.log(err) // => Error: Whoops
+})
+```
+
+### State Reducer
+
+```js
+// A starter template for your own reducer
+function (state, action) {
+  // Set initial state or clone existing state
+  if (state == null) {
+    state = {}
+  }
+  else {
+    state = JSON.parse(JSON.stringify(state))
+  }
+
+  // Handle known actions
+  if (typeof action === 'object') {
+    switch (action.type) {
+      case 'FOO':
+        state.isFoo = true
+      break
+      case 'BAR':
+        state.isBar = true
+      break
+    }
+  }
+
+  // Return the new state
+  return state
+}
+```
+
+Reducers should obey a few rules:
+
+1. Do not mutate `state`
+2. Always return a new `state`
+3. Be prepared to set an inital state if `state` is `undefined`
+4. If the action is unrecognized (it might be `null` when `Conflux` initializes the state, for example), return the same `state`
 
 ### Subscribing to changes
 
