@@ -81,9 +81,11 @@ var conflux = require('conflux')
       id: uuid.v4()
     , clusterSize: 5
     , channel: {
-        name: 'foobar'
-        // ... additional Channel options specific to "foobar"
-        // You can use any Gaggle Channel, like Redis.
+        name: 'redis' // or 'memory', etc
+
+        // ... additional keys are passed as options to the "redis" channel.
+        // see Gaggle's Channel docs for available channels and options:
+        // https://github.com/ben-ng/gaggle#channels
       }
 
       // these take the place of "action creators" in redux parlance
@@ -102,7 +104,25 @@ var conflux = require('conflux')
         // return a new `state` using the information in `action`
       }
 
-      // ... additional Gaggle options, see Gaggle's documentation
+      /**
+      * Optional, advanced settings. These control the parameters of the
+      * underlying Raft algorithm, so you can optimize performance for the
+      * network that you are on. You should set them lower on fast networks
+      * and higher on slow networks.
+      */
+
+      // The range of random values that will be selected for the
+      // Raft leader election timeout, in milliseconds
+    , electionTimeout: {
+        min: 300
+      , max: 500
+      }
+
+      // The interval in milliseconds where the leader node will
+      // send heartbeats to followers. Must be significantly shorter
+      // than the electionTimeout. Should be longer than the average
+      // round-trip message time.
+    , heartbeatInterval: 50
     })
 ```
 
@@ -114,7 +134,7 @@ Conflux is built on top of [Gaggle](https://github.com/ben-ng/gaggle), and there
 c.perform(String methodName, Array args, [Number timeout], [Function callback])
 ```
 
-You never dispatch Actions directly in Conflux. Actions must be dispatched from the body of a Method. You declare Methods when constructing a Conflux instance, and call them with `perform()`. These Methods return the Action to be dispatched, `null` if nothing should be done, and an Error if the Action is invalid for the provisional state.
+You never dispatch Actions directly in Conflux. Actions must be dispatched from the body of a Method. **Methods must be synchronous.** You declare Methods when constructing a Conflux instance, and call them with `perform()`. These Methods return the Action to be dispatched, `null` if nothing should be done, and an Error if the Action is invalid for the provisional state.
 
 ```js
 var opts = {
@@ -137,7 +157,7 @@ var opts = {
     }
   }
 
-  // ... other Conflux options
+  // ... other Conflux options, like the channel to use, node id, etc...
 }
 
 var c = conflux(opts)
