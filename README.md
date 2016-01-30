@@ -229,7 +229,7 @@ Reducers should obey a few rules:
 c.subscribe(function() callback)
 ```
 
-Calls `callback` whenever an action is committed. Returns the `unsubscribe` function for `callback.
+Calls `callback` whenever an action is committed. Returns an `unsubscribe` function that when called, removes `callback` from the subscriptions.
 
 ### Getting Committed and Provisional State
 
