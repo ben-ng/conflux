@@ -36,31 +36,39 @@ Conflux is *very* new, so I am working on a few example applications.
 ## Quick Example
 
 ```js
-// Your methods, reducer, and other settings go in `opts`
-// See the full docs for that; this example is meant to be short
-var nodeA = conflux(opts)
-var nodeB = conflux(opts)
-var nodeC = conflux(opts)
+var node = conflux({
+  id: uuid.v4()
 
-// When the cluster comes to consensus about an action, this
-// method is called.
-nodeB.subscribe(function () {
+  // how many nodes are in the cluster?
+, clusterSize: 5
+
+  // how should nodes communicate?
+, channel: {
+    name: 'redis'
+  }
+
+  // define your action creators
+, methods: {
+    append: function (thing) {
+      return thing
+    }
+  }
+
+  // define your reducer
+, reduce: function (state, action) {
+    state = state == null ? [] : state
+
+    return state.concat(action)
+  }
+})
+
+// subscribe to changes
+node.subscribe(function () {
   console.log(nodeB.getState().log.join(' '))
 })
 
-// Performs an RPC call on the leader node, causing actions
-// to be dispatched on the entire cluster.
-nodeA.perform('append', ['foo'])
-
-nodeB.perform('append', ['bar'])
-
-nodeC.perform('append', ['baz'])
-
-// Output will be some permutation of:
-//
-// bar
-// bar foo
-// bar foo baz
+// perform an action
+node.perform('append', ['foo'])
 ```
 
 If you're familiar with Redux this should seem quite familiar. You `subscribe()` to a Conflux instance, and call `getState()` inside to get the current state. Instead of dispatching actions directly, you `perform()` Methods that `dispatch()` them. Methods are declared when you construct a Conflux instance, and are the equivalent of Action Creators in Redux.
@@ -88,7 +96,7 @@ var conflux = require('conflux')
         // https://github.com/ben-ng/gaggle#channels
       }
 
-      // these take the place of "action creators" in redux parlance
+      // these are "action creators" in redux parlance
     , methods: {
         foobar: function (foo, bar) {
           return {
