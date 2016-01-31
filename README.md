@@ -71,7 +71,7 @@ node.subscribe(function () {
 node.perform('append', ['foo'])
 ```
 
-If you're familiar with Redux this should seem quite familiar. You `subscribe()` to a Conflux instance, and call `getState()` inside to get the current state. Instead of dispatching actions directly, you `perform()` Methods that `dispatch()` them. Methods are declared when you construct a Conflux instance, and are the equivalent of Action Creators in Redux.
+If you've used Redux before, Conflux should look familiar. You `subscribe()` to a Conflux instance, and call `getState()` inside to get the current state. Instead of dispatching actions directly, you `perform()` Methods that `dispatch()` them. Methods are declared when you construct a Conflux instance, and are the equivalent of Action Creators in Redux.
 
 ## API
 
