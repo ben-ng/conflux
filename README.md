@@ -29,7 +29,9 @@ Natrually, it does this by composing the two ideas.
 
 ## What Can I Build With Conflux?
 
-Conflux is *very* new, so I am working on a few example applications.
+You can build serverless applications! I don't mean ["serverless"](https://github.com/serverless/serverless) as in "uses AWS Lambda". I mean serverless as in "there is no central server, just a cluster of nodes that coordinate with each other". Think Bittorent.
+
+Conflux is *very* new, so I am working on a few example applications to demonstrate what's possible. If you build something with Conflux, send me a PR so I can add it to this list.
 
 * [Distributed Mutex](https://github.com/ben-ng/mutex-js)
 
