@@ -274,7 +274,7 @@ Distributed systems are really difficult to prove and test, and Conflux is no ex
 
 * Conflux has integration tests with [full statement *and* branch coverage](https://coveralls.io/github/ben-ng/conflux?branch=master)
 * It is built on Gaggle, which has integration tests with [full statement coverage](https://coveralls.io/github/ben-ng/gaggle?branch=master)
-* My [distributed mutex](https://github.com/ben-ng/mutex-js) is built on Conflux and has [full statement and branch coverage](https://coveralls.io/github/ben-ng/mutex-js?branch=master) and a [fuzz test](https://github.com/ben-ng/mutex-js/tree/master/fuzz) you can run yourself
+* My [distributed mutex](https://github.com/ben-ng/mutex-js) is built on Conflux and has [full statement *and* branch coverage](https://coveralls.io/github/ben-ng/mutex-js?branch=master) and a [fuzz test](https://github.com/ben-ng/mutex-js/tree/master/fuzz) you can run yourself
 
 ## License
 
