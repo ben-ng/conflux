@@ -25,7 +25,7 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
 
 Distributed systems are **hard**. Conflux is an attempt at making distributed systems understandable. It aims to do what [Redux](http://redux.js.org) did for [Flux](https://facebook.github.io/flux), and what [Raft](http://raft.github.io) did for [Paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)).
 
-Natrually, it does this by composing the two ideas.
+Naturally, it does this by composing the two ideas.
 
 ## What Can I Build With Conflux?
 
