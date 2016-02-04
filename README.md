@@ -284,13 +284,13 @@ Distributed systems are really difficult to prove and test, and Conflux is no ex
 
 In the name of [good science](http://calteches.library.caltech.edu/51/2/CargoCult.htm), and as a first line of defense against bandwagons & go fever, here are all the real and possible issues I can think of that you might run into by using this software.
 
-1. Since Gaggle doesn't do log compaction yet, it will take Conflux longer and longer to catch up a node that fails and restarts
-2. Since Gaggle can't handle membership changes yet, you cannot change the size of the cluster during operation
-3. Conflux can't handle byzantine failures, so you should only use it in envrionments you control, or where security is not an issue (a cute demo, for example)
-4. I think that Conflux will tolerate crash-stop failures, but haven't proved or tested this at all
-5. I haven't formally proved that any my ideas are correct yet, and even after I do, you should wait a while for more experienced people to weigh in
+1. Since Gaggle doesn't do log compaction yet, it will take Conflux longer and longer to catch up a node that fails and then restarts with an empty log
+2. Since Gaggle can't handle membership changes yet, you cannot change the size of the cluster during operation, and there is no safety check against this, so you will experience undefined behavior if you change the number of nodes in the cluster
+3. Conflux can't handle byzantine failures, so **you should only use it in envrionments you control, or where security is not an issue** (a cute demo, for example)
+4. I *think* that Conflux will tolerate crash-stop failures since it is based on Raft, but haven't proved or tested this at all
+5. I haven't formally proved that any of my ideas are correct yet, and even after I do, you should wait a while for more experienced people to weigh in and check my work
 6. It is **really difficult** to reproduce issues in distributed systems, so if you run into a problem, you're most likely on your own
-7. The documentation is sparse because I released early to get feedback
+7. The documentation is sparse because I released early to get feedback, and I'm still trying to figure out what the best way to teach Conflux is, so it might be tricky getting started.
 
 TLDR: You should not use Conflux for mission-critical work.
 
