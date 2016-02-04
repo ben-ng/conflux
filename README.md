@@ -17,6 +17,8 @@ Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
   - [Getting Committed and Provisional State](#getting-committed-and-provisional-state)
   - [Deconstructing an instance](#deconstructing-an-instance)
 - [Correctness](#correctness)
+- [What Could Go Wrong](#what-could-go-wrong)
+- [Contributing](#contributing)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -277,6 +279,26 @@ Distributed systems are really difficult to prove and test, and Conflux is no ex
 * Conflux has integration tests with [full statement *and* branch coverage](https://coveralls.io/github/ben-ng/conflux?branch=master)
 * It is built on Gaggle, which has integration tests with [full statement coverage](https://coveralls.io/github/ben-ng/gaggle?branch=master)
 * My [distributed mutex](https://github.com/ben-ng/mutex-js) is built on Conflux and has [full statement *and* branch coverage](https://coveralls.io/github/ben-ng/mutex-js?branch=master) and a [fuzz test](https://github.com/ben-ng/mutex-js/tree/master/fuzz) you can run yourself
+
+## What Could Go Wrong
+
+In the name of [good science](http://calteches.library.caltech.edu/51/2/CargoCult.htm), and as a first line of defense against bandwagons & go fever, here are all the real and possible issues I can think of that you might run into by using this software.
+
+1. Since Gaggle doesn't do log compaction yet, it will take Conflux longer and longer to catch up a node that fails and restarts
+2. Since Gaggle can't handle membership changes yet, you cannot change the size of the cluster during operation
+3. Conflux can't handle byzantine failures, so you should only use it in envrionments you control, or where security is not an issue (a cute demo, for example)
+4. I think that Conflux will tolerate crash-stop failures, but haven't proved or tested this at all
+5. I haven't formally proved that any my ideas are correct yet, and even after I do, you should wait a while for more experienced people to weigh in
+6. It is **really difficult** to reproduce issues in distributed systems, so if you run into a problem, you're most likely on your own
+7. The documentation is sparse because I released early to get feedback
+
+TLDR: You should not use Conflux for mission-critical work.
+
+## Contributing
+
+Make some cool demos. Help me refine the idea, docs, and API. Send me pull requests, even if its for a tiny typo. Chat with me on [twitter](https://twitter.com/_benng).
+
+Let's make distributed systems fun.
 
 ## License
 
