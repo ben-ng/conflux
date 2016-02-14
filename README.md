@@ -37,6 +37,7 @@ You can build serverless applications! I don't mean ["serverless"](https://githu
 
 Conflux is *very* new, so I am working on a few example applications to demonstrate what's possible. If you build something with Conflux, send me a PR so I can add it to this list.
 
+* [Various In-Browser Demos](https://conflux-demos.herokuapp.com)
 * [Distributed Mutex](https://github.com/ben-ng/mutex-js)
 
 ## Quick Example
