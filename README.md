@@ -2,6 +2,8 @@
 
 Conflux is [Redux](https://github.com/rackt/redux) for distributed systems.
 
+Try a [demo](https://conflux-demos.herokuapp.com)!
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Contents**
@@ -296,7 +298,7 @@ TLDR: You should not use Conflux for mission-critical work.
 
 ## Contributing
 
-Make some cool demos. Help me refine the idea, docs, and API. Send me pull requests, even if its for a tiny typo. Chat with me on [twitter](https://twitter.com/_benng).
+Make some [cool demos](https://github.com/ben-ng/conflux-demos). Help me refine the idea, docs, and API. Send me pull requests, even if its for a tiny typo. Chat with me on [twitter](https://twitter.com/_benng).
 
 Let's make distributed systems fun.
 
